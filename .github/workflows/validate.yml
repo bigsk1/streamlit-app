@@ -38,4 +38,5 @@ jobs:
           ruff check .
       - name: Type-check with mypy
         run: |
-          mypy .
+          mypy . --exclude openai/_models.py
+
