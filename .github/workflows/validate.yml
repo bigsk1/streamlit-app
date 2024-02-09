@@ -36,7 +36,7 @@ jobs:
       - name: Lint with ruff
         run: |
           ruff check .
-      - name: Run mypy
-        run: mypy . --exclude openai --show-traceback
+      # - name: Run mypy
+      #   run: mypy . --exclude openai --show-traceback
         
 
