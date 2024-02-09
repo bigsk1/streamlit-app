@@ -34,7 +34,7 @@ ws_settings = WorkspaceSettings(
     # Name of the image
     image_name="streamlit-app",
     # Repository for the image
-    # image_repo="phidata",
+    image_repo="654654240011.dkr.ecr.us-west-2.amazonaws.com",
     # Build images locally
-    # build_images=True,
+    build_images=True,
 )
