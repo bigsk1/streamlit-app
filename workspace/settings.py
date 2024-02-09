@@ -24,12 +24,12 @@ ws_settings = WorkspaceSettings(
     prd_db_enabled=True,
     # -*- AWS settings
     # Region for AWS resources
-    aws_region="us-east-1",
+    aws_region="us-west-2",
     # Availability Zones for AWS resources
-    aws_az1="us-east-1a",
-    aws_az2="us-east-1b",
+    aws_az1="us-west-2a",
+    aws_az2="us-west-2b",
     # Subnet IDs in the aws_region
-    # subnet_ids=["subnet-xyz", "subnet-xyz"],
+    subnet_ids=["subnet-016401b9d1d030c40", "subnet-0308f8e6192a18f70"],
     # -*- Image Settings
     # Name of the image
     image_name="streamlit-app",
