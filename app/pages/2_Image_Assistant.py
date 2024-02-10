@@ -1,7 +1,7 @@
+import os
 import base64
 from io import BytesIO
 from typing import List
-
 import streamlit as st
 from PIL import Image
 from phi.assistant import Assistant
@@ -14,19 +14,29 @@ from phi.tools.streamlit.components import (
 
 from ai.assistants.image import get_image_assistant
 from utils.log import logger
+from urllib.parse import urlparse
+import requests
 
 st.set_page_config(
     page_title="Image AI",
-    page_icon=":computer:",
+    page_icon=":camera:",
 )
 st.title("Image Assistant")
-st.markdown("##### :computer: built using AI")
+st.markdown("##### Artistic Revolution :camera: AI Empowered")
 
 
 def encode_image(image_file):
     image = Image.open(image_file)
+    
+    # Convert image to RGB if it has an alpha channel (transparency)
+    if image.mode in ('RGBA', 'LA') or (image.mode == 'P' and 'transparency' in image.info):
+        # Create a white background
+        background = Image.new('RGB', image.size, (255, 255, 255))
+        background.paste(image, mask=image.split()[3])  # 3 is the alpha channel
+        image = background
+    
     buffer = BytesIO()
-    image.save(buffer, format="JPEG")
+    image.save(buffer, format="JPEG")  # Now saving as JPEG should not raise an error
     encoding = base64.b64encode(buffer.getvalue()).decode("utf-8")
     return f"data:image/jpeg;base64,{encoding}"
 
@@ -37,6 +47,54 @@ def restart_assistant():
     st.session_state["file_uploader_key"] += 1
     st.session_state["uploaded_image"] = None
     st.rerun()
+
+
+    # https only 
+def is_valid_url(url):
+    parsed_url = urlparse(url)
+    return bool(parsed_url.scheme == "https" and parsed_url.netloc)
+
+    # security for images
+def is_image_content_type(response_headers):
+    content_type = response_headers.get('Content-Type', '')
+    return content_type.startswith('image/')
+
+
+    # Function to download and save image from URL
+def download_image_from_url(image_url, output_dir="downloaded_images"):
+    # Validate URL
+    if not is_valid_url(image_url):
+        return None, "Invalid URL format."
+    
+    try:
+        # Perform the request
+        response = requests.get(image_url, stream=True, timeout=10)
+        response.raise_for_status()  # Check for HTTP errors
+
+        # Validate content type
+        if not is_image_content_type(response.headers):
+            return None, "The URL does not point to a valid image content type."
+
+        # Process and save the image
+        file_name = os.path.basename(image_url)
+        file_extension = os.path.splitext(file_name)[1].lower()
+        allowed_formats = ['.jpg', '.jpeg', '.png', '.webp']
+        if file_extension not in allowed_formats:
+            error_message = "Unsupported image format. Please upload an image in one of the following formats: " + ", ".join(allowed_formats)
+            return None, error_message
+
+        # Save the image
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        file_path = os.path.join(output_dir, file_name)
+        with open(file_path, 'wb') as f:
+            for chunk in response.iter_content(1024):
+                f.write(chunk)
+
+        return file_path, None
+    except requests.exceptions.RequestException as e:
+        return None, f"Error downloading the image: {e}"
+
 
 
 def main() -> None:
@@ -64,6 +122,26 @@ def main() -> None:
     else:
         image_assistant = st.session_state["image_assistant"]
 
+    # Sidebar for image URL input
+    image_url = st.sidebar.text_input("Enter an Image URL", "")
+
+
+    # Download and process image from URL if provided
+    if image_url:
+        downloaded_image_path, error_message = download_image_from_url(image_url)
+        if downloaded_image_path:
+            st.sidebar.success("Image downloaded successfully.")
+            # Encode the downloaded image for use in the application
+            with open(downloaded_image_path, "rb") as image_file:
+                encoded_downloaded_image = encode_image(image_file)
+            # Optionally set the uploaded_image state to the encoded image
+            st.session_state["uploaded_image"] = encoded_downloaded_image
+        elif error_message:
+            st.sidebar.error(error_message)
+        else:
+            st.sidebar.error("Failed to download the image.")
+                             
+     
     # Create assistant run (i.e. log to database) and save run_id in session state
     st.session_state["image_assistant_run_id"] = image_assistant.create_run()
 

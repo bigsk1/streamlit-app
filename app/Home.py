@@ -7,7 +7,7 @@ st.set_page_config(
     page_icon=":computer:",
 )
 st.title("AI Apps")
-st.markdown("##### :computer: built using AI")
+st.markdown("##### Uncover Secrets :mag_right: With AI Insight")
 
 
 def main() -> None:

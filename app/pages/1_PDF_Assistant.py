@@ -17,10 +17,10 @@ from utils.log import logger
 
 st.set_page_config(
     page_title="PDF AI",
-    page_icon=":computer:",
+    page_icon=":mag_right:",
 )
 st.title("PDF Assistant")
-st.markdown("##### :computer: built using AI")
+st.markdown("#####  From PDFs to Insights :mag_right: AI-Powered")
 
 
 def restart_assistant():

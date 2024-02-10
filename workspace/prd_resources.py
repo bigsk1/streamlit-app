@@ -17,7 +17,7 @@ from workspace.settings import ws_settings
 # -*- Resources for the Production Environment
 #
 # Skip resource deletion when running `phi ws down` (set to True after initial deployment)
-skip_delete: bool = False
+skip_delete: bool = True
 # Save resource outputs to workspace/outputs
 save_output: bool = True
 # Create load balancer for the application
@@ -196,8 +196,8 @@ prd_streamlit = Streamlit(
     subnets=ws_settings.subnet_ids,
     security_groups=[prd_sg],
     # To enable HTTPS, create an ACM certificate and add the ARN below:
-    # load_balancer_enable_https=True,
-    # load_balancer_certificate_arn="LOAD_BALANCER_CERTIFICATE_ARN",
+    load_balancer_enable_https=True,
+    load_balancer_certificate_arn="arn:aws:acm:us-west-2:654654240011:certificate/d098848a-95bd-4863-9602-4b11eb4dd570",
     load_balancer_security_groups=[prd_lb_sg],
     create_load_balancer=create_load_balancer,
     env_vars=container_env,
