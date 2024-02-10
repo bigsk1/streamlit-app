@@ -14,7 +14,6 @@ from phi.tools.streamlit.components import (
 
 from ai.assistants.image import get_image_assistant
 from utils.log import logger
-import base64
 from urllib.parse import urlparse
 import requests
 
