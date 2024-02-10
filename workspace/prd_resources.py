@@ -17,7 +17,7 @@ from workspace.settings import ws_settings
 # -*- Resources for the Production Environment
 #
 # Skip resource deletion when running `phi ws down` (set to True after initial deployment)
-skip_delete: bool = False
+skip_delete: bool = True
 # Save resource outputs to workspace/outputs
 save_output: bool = True
 # Create load balancer for the application
