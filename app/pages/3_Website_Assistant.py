@@ -16,10 +16,10 @@ from utils.log import logger
 
 st.set_page_config(
     page_title="Website AI",
-    page_icon=":computer:",
+    page_icon=":link:",
 )
 st.title("Website Assistant")
-st.markdown("##### :computer: built using AI")
+st.markdown("##### Links Made Smarter :link: AI-Refined Searches")
 
 
 def restart_assistant():

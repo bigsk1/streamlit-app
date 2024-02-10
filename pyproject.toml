@@ -20,6 +20,7 @@ dependencies = [
   "types-beautifulsoup4",
   "pillow",
   "types-Pillow",
+  "requests",
   # Type checking
   "mypy",
   # Linting and Formatting
